@@ -44,3 +44,15 @@ width:0%;
 background:#4ea1ff;
 transition:0.2s;
 }
+.confirm{
+position:fixed;
+top:40%;
+left:50%;
+transform:translate(-50%,-50%);
+background:#161a22;
+padding:20px;
+border:1px solid #333;
+border-radius:10px;
+z-index:1000;
+}
+.hidden{display:none;}
