@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Players</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Team Players</h1>
+
+<nav>
+  <a href="index.html">Leaderboard</a>
+  <a href="add.html">Add Tournament</a>
+</nav>
+
+<input id="username" placeholder="Lichess username">
+<button onclick="addPlayer()">Add Player</button>
+
+<ul id="playerList"></ul>
+
+<script src="db.js"></script>
+<script>
+
+function render(){
+  const list=document.getElementById("playerList");
+  list.innerHTML="";
+
+  db.players.forEach(p=>{
+    const li=document.createElement("li");
+
+    li.innerHTML=`
+      <input value="${p.username}" id="name-${p.id}">
+      <button onclick="saveName('${p.id}')">Save</button>
+      <button onclick="removePlayer('${p.id}')">Delete</button>
+    `;
+
+    list.appendChild(li);
+  });
+}
+
+function saveName(id){
+  const v=document.getElementById("name-"+id).value.trim();
+  if(!v) return;
+  db.editPlayer(id,v);
+  render();
+}
+
+function removePlayer(id){
+
+  // Prevent deleting player if used in tournaments
+  const used=db.tournaments.some(t =>
+    t.players.some(p => p.playerId === id)
+  );
+
+  if(used){
+    alert("Cannot delete player.\nDelete their tournaments first.");
+    return;
+  }
+
+  if(confirm("Delete this player permanently?")){
+    db.deletePlayer(id);
+    render();
+  }
+}
+
+function addPlayer(){
+  const name=document.getElementById("username").value.trim();
+  if(!name) return;
+  db.addPlayer(name);
+  document.getElementById("username").value="";
+  render();
+}
+
+render();
+
+</script>
+</body>
+</html>
