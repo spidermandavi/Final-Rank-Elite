@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>History</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Tournament History</h1>
+
+<nav>
+  <a href="index.html">Leaderboard</a>
+  <a href="add.html">Add Tournament</a>
+</nav>
+
+<ul id="history"></ul>
+
+<script src="db.js"></script>
+<script>
+const list=document.getElementById("history");
+
+function render(){
+  list.innerHTML="";
+
+  db.tournaments.forEach(t=>{
+    const li=document.createElement("li");
+
+    li.innerHTML=`
+      ${t.id} | ${t.type} | $${t.prize}
+      <button onclick="del('${t.id}')">Delete</button>
+    `;
+
+    list.appendChild(li);
+  });
+}
+
+function del(id){
+  if(confirm("Delete tournament and undo stats?")){
+    db.deleteTournament(id);
+    render();
+  }
+}
+
+render();
+</script>
+</body>
+</html>
