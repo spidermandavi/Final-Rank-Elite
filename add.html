@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Add Tournament</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Import Arena</h1>
+
+<nav>
+  <a href="index.html">Leaderboard</a>
+  <a href="players.html">Players</a>
+</nav>
+
+<h2>Manual ID</h2>
+<input id="arenaId" placeholder="Arena ID">
+
+<label>Prize Pool</label>
+<input id="prize" type="number">
+
+<label>Type</label>
+<select id="type">
+<option value="chessmood">ChessMood</option>
+<option value="streamers">Streamers</option>
+</select>
+
+<button onclick="processArena()">Import & Calculate</button>
+
+<hr>
+
+<h2>From Team Page</h2>
+<button onclick="loadTeamArenas()">Load Recent Arenas</button>
+<ul id="arenaList"></ul>
+
+<div class="progress">
+  <div id="bar"></div>
+</div>
+
+<p id="status"></p>
+
+<script src="db.js"></script>
+<script src="lichess.js"></script>
+<script src="calc.js"></script>
+
+<script>
+async function loadTeamArenas(){
+
+const res=await fetch("https://lichess.org/api/team/final-rank-elite/arena",{
+headers:{Accept:"application/x-ndjson"}
+});
+
+const text=await res.text();
+const arenas=text.trim().split("\n").map(JSON.parse);
+
+const ul=document.getElementById("arenaList");
+ul.innerHTML="";
+
+arenas.slice(0,10).forEach(a=>{
+const li=document.createElement("li");
+
+li.innerHTML=`
+${a.fullName} (${a.id})
+<button onclick="useArena('${a.id}')">Use</button>
+`;
+
+ul.appendChild(li);
+});
+}
+
+function useArena(id){
+document.getElementById("arenaId").value=id;
+window.scrollTo(0,0);
+}
+</script>
+
+</body>
+</html>
