@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Monthly Earnings</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Monthly Earnings</h1>
+
+<nav>
+  <a href="index.html">Leaderboard</a>
+</nav>
+
+<ul id="months"></ul>
+
+<script src="db.js"></script>
+<script>
+const months={};
+
+db.players.forEach(p=>{
+  p.history.forEach(h=>{
+    const m=new Date(h.date).toISOString().slice(0,7);
+    months[m]=(months[m]||0)+h.money;
+  });
+});
+
+const ul=document.getElementById("months");
+Object.entries(months).forEach(([m,v])=>{
+  const li=document.createElement("li");
+  li.textContent=`${m} : $${v.toFixed(2)}`;
+  ul.appendChild(li);
+});
+</script>
+</body>
+</html>
