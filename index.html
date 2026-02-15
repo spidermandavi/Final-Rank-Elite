@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Team Earnings Leaderboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Team Leaderboard</h1>
+
+<nav>
+  <a href="players.html">Players</a>
+  <a href="add.html">Add Tournament</a>
+  <a href="history.html">History</a>
+  <a href="monthly.html">Monthly Earnings</a>
+</nav>
+
+<table id="leaderboard">
+<thead>
+<tr>
+<th>Rank</th>
+<th>Player</th>
+<th>Score</th>
+<th>ChessMood $</th>
+<th>Streamers $</th>
+<th>Total $</th>
+<th>Winrate</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<!-- Load DB first -->
+
+<script src="db.js"></script>
+
+<!-- Wait for page + db before running UI -->
+
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  if(!window.db){
+    console.error("Database failed to load");
+    return;
+  }
+
+  const script=document.createElement("script");
+  script.src="ui.js";
+  document.body.appendChild(script);
+});
+</script>
+
+</body>
+</html>
