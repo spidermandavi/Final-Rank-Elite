@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Players</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Team Players</h1>
+
+<nav>
+  <a href="index.html">Leaderboard</a>
+  <a href="add.html">Add Tournament</a>
+</nav>
+
+<input id="username" placeholder="Lichess username">
+<button id="addBtn">Add Player</button>
+
+<ul id="playerList"></ul>
+
+<script src="db.js"></script>
+
+<script>
+
+/* ================= RENDER ================= */
+
+function render(){
+  if(!window.db) return;
+
+  const list=document.getElementById("playerList");
+  list.innerHTML="";
+
+  (db.players || []).forEach(p=>{
+    const li=document.createElement("li");
+
+    const input=document.createElement("input");
+    input.value=p.username;
+    input.id="name-"+p.id;
+
+    const save=document.createElement("button");
+    save.textContent="Save";
+    save.onclick=()=>saveName(p.id);
+
+    const del=document.createElement("button");
+    del.textContent="Delete";
+    del.onclick=()=>removePlayer(p.id);
+
+    li.appendChild(input);
+    li.appendChild(save);
+    li.appendChild(del);
+
+    list.appendChild(li);
+  });
+}
+
+/* ================= ACTIONS ================= */
+
+function saveName(id){
+  const v=document.getElementById("name-"+id).value.trim();
+  if(!v) return;
+  db.editPlayer(id,v);
+  render();
+}
+
+function removePlayer(id){
+
+  const tournaments = db.tournaments || [];
+
+  const used = tournaments.some(t =>
+    (t.players || []).some(p => p.playerId === id)
+  );
+
+  if(used){
+    alert("Cannot delete player.\nDelete their tournaments first.");
+    return;
+  }
+
+  if(confirm("Delete this player permanently?")){
+    db.deletePlayer(id);
+    render();
+  }
+}
+
+function addPlayer(){
+  const input=document.getElementById("username");
+  const name=input.value.trim();
+  if(!name) return;
+
+  db.addPlayer(name);
+  input.value="";
+  input.focus();
+  render();
+}
+
+/* ================= START ================= */
+
+window.addEventListener("DOMContentLoaded", ()=>{
+  document.getElementById("addBtn").onclick=addPlayer;
+  render();
+});
+
+</script>
+
+</body>
+</html>
